@@ -6,16 +6,43 @@ class Assignment
   #
   # Insert rows in DB
   #
-  def create_user(params)
+  def create_user(user_properties)
       # accept a hash of user properties (`:username` and `:password_digest`) as an input parameter. Note these are 100% same as model class.
       # use the User Model class to create a new user in the DB
       # return an instance of the class with primary key (`id`), and dates (`created_at` and `updated_at`) assigned
+
+      # First way to create a record.
+      """
+      new_user = User.new;
+      new_user.username = user_properties[:username];
+      new_user.password_digest = user_properties[:password_digest];
+      new_user.save;
+      """
+
+      # Second way to create a record.
+      """
+      new_user = User.new(user_properties);
+      new_user.save;
+      """
+
+      # Third way to create a record.
+      new_user = User.create(user_properties);
+      return new_user;
+
+
   end
 
-  def create_todolist(params)
+  def create_todolist(todolist_properties)
       # accept a hash of todolist properties (`:name` and `:due_date`) as an input parameter. Note these are not 100% the same as Model class.
       # use the TodoList Model class to create a new user in the DB
       # return an instance of the class with primary key (`id`), and dates (`created_at` and `updated_at`) assigned
+
+      # Because the names in the input hash are not 100% same as Model class. So we cannot simply pass it to the TodoList class to create a new todolist.
+      new_todolist = TodoList.new;
+      new_todolist.list_name = todolist_properties[:name];
+      new_todolist.list_due_date = todolist_properties[:due_date];
+      new_todolist.save;
+      return new_todolist;
   end
 
   #
@@ -25,12 +52,16 @@ class Assignment
       # accept offset and limit input parameters
       # use the User Model class to find all Users, ordered by `updated_at` ascending, with specified row offset and row limit
       # return a collection of User instances that represent the specified rows
+      selected_user_groups = User.offset(offset).limit(limit).all.order(:updated_at);
+      return selected_user_groups;
   end
 
   def find_alllists(offset, limit)
       # accept offset and limit input parameters
       # use the TodoList Model class to find all TodoLists, ordered by `list_due_date` descending, with specified row offset and row limit
       # return a collection of TodoList instances that represent the specified rows
+      selected_list_groups = TodoList.offset(offset).limit(limit).all.order(list_due_date: :desc);
+      return selected_list_groups;
   end
 
   #
